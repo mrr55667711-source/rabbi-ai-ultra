@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RABBI AI ULTRA</title>
+<style>
+:root{--bg:#050907;--panel:#0a1510;--line:#16452c;--green:#37ff86;--muted:#8ab99b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#10271a 0,#050907 55%);color:#eafff0;font:15px system-ui,Arial;min-height:100vh}
+header{height:72px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:#06100bd9;position:sticky;top:0;z-index:2}
+.brand{display:flex;gap:12px;align-items:center}.logo{width:42px;height:42px;border:1px solid var(--green);border-radius:12px;display:grid;place-items:center;color:var(--green);font-weight:900;box-shadow:0 0 18px #37ff8640}
+h1{font-size:17px;letter-spacing:2px;margin:0;color:var(--green)}.sub{font-size:10px;color:var(--muted);letter-spacing:2px}
+.status{font-size:11px;color:var(--green);border:1px solid var(--line);padding:7px 10px;border-radius:20px}
+main{max-width:980px;margin:28px auto;padding:0 15px}.hero{text-align:center;margin:30px 0}.hero h2{font-size:clamp(25px,5vw,40px);margin:0;color:var(--green);text-shadow:0 0 22px #37ff8640}.hero p{color:var(--muted);margin:9px}
+.tools{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:18px 0}.chip{border:1px solid var(--line);background:#09140e;color:#b8f6ca;padding:8px 12px;border-radius:9px;font-size:12px}
+.chat{border:1px solid var(--line);background:#07110c;border-radius:16px;overflow:hidden;box-shadow:0 15px 55px #0008}
+#messages{height:min(55vh,560px);min-height:300px;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:14px}
+.msg{max-width:88%;padding:12px 14px;border-radius:12px;white-space:pre-wrap;line-height:1.55;overflow-wrap:anywhere}.bot{align-self:flex-start;background:#102219;border:1px solid #1a5031}.user{align-self:flex-end;background:#123b25;border:1px solid #237b45}
+.who{font-size:10px;color:var(--green);letter-spacing:1px;margin-bottom:5px}
+.composer{border-top:1px solid var(--line);padding:12px;display:flex;gap:9px;align-items:flex-end;background:#08130d}
+textarea{flex:1;resize:vertical;min-height:48px;max-height:160px;background:#030906;color:#eafff0;border:1px solid #1c5132;border-radius:10px;padding:13px;font:14px system-ui;outline:none}
+button{cursor:pointer;border:0;border-radius:10px;background:var(--green);color:#031008;font-weight:800;padding:14px 18px}button:disabled{opacity:.5;cursor:wait}
+.filelabel{cursor:pointer;border:1px solid var(--line);padding:13px;border-radius:10px;color:var(--green);font-size:13px}input[type=file]{display:none}
+.note{font-size:11px;color:#739b80;text-align:center;margin:12px}
+@media(max-width:560px){header{padding:0 12px}.status{font-size:9px}main{margin:10px auto}.composer{gap:6px;padding:8px}button{padding:13px}.filelabel{padding:13px 10px}}
+</style></head>
+<body>
+<header><div class="brand"><div class="logo">R</div><div><h1>RABBI AI ULTRA</h1><div class="sub">HACKER EDITION • CODING ASSISTANT</div></div></div><div class="status">● SYSTEM READY</div></header>
+<main>
+<section class="hero"><h2>WELCOME, OPERATOR</h2><p>Code • Analyze • Debug • Build</p>
+<div class="tools"><span class="chip">⌘ HTML ANALYZER</span><span class="chip">⌘ CODE BUILDER</span><span class="chip">⌘ DEBUG MODE</span><span class="chip">⌘ FILE REVIEW</span></div></section>
+<section class="chat"><div id="messages"><div class="msg bot"><div class="who">RABBI AI ULTRA</div>স্বাগতম! 👑 আমি তোমার coding assistant। HTML/CSS/JS/Python কোড, error, login logic বা project নিয়ে কাজ করতে পারি। ফাইল দিলে তার text content বিশ্লেষণ করব। কী দিয়ে শুরু করব?</div></div>
+<div class="composer"><label class="filelabel" for="file">＋ FILE</label><input id="file" type="file" accept=".html,.htm,.css,.js,.py,.json,.txt,.md"><textarea id="prompt" placeholder="এখানে নির্দেশনা লেখো... (Enter = send, Shift+Enter = new line)"></textarea><button id="send">SEND ➤</button></div></section>
+<div class="note">API key server-side থাকে। অজানা বা অনুমতিহীন সিস্টেমে প্রবেশের কাজে ব্যবহার কোরো না।</div>
+</main>
+<script>
+const box=document.getElementById('messages'), input=document.getElementById('prompt'), send=document.getElementById('send'), fileInput=document.getElementById('file');
+let history=[];
+function add(role,text){const d=document.createElement('div');d.className='msg '+(role==='user'?'user':'bot');const w=document.createElement('div');w.className='who';w.textContent=role==='user'?'YOU':'RABBI AI ULTRA';const t=document.createElement('div');t.textContent=text;d.append(w,t);box.append(d);box.scrollTop=box.scrollHeight}
+async function transmit(){
+ let text=input.value.trim(); if(!text && !fileInput.files.length)return;
+ if(fileInput.files.length){const f=fileInput.files[0];if(f.size>300000){add('bot','ফাইলটি 300KB-এর বেশি। আপাতত ছোট ফাইল বা প্রয়োজনীয় কোডের অংশ পাঠাও।');return}
+ const content=await f.text();text=(text?text+'\\n\\n':'')+'[Attached file: '+f.name+']\\n'+content;fileInput.value='';}
+ input.value='';add('user',text);history.push({role:'user',content:text});send.disabled=true;send.textContent='...';
+ const wait=document.createElement('div');wait.className='msg bot';wait.textContent='Analyzing...';box.append(wait);box.scrollTop=box.scrollHeight;
+ try{const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history})});const data=await r.json();wait.remove();if(!r.ok)throw new Error(data.error||'Request failed');history.push({role:'assistant',content:data.reply});add('assistant',data.reply)}
+ catch(e){wait.remove();add('assistant','⚠️ '+e.message)}
+ finally{send.disabled=false;send.textContent='SEND ➤';input.focus()}
+}
+send.addEventListener('click',transmit);input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();transmit()}});
+</script></body></html>
